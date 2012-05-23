@@ -1,0 +1,20 @@
+!!!
+%html
+  %head
+    %title Saosao
+    = stylesheet_link_tag    "application", :media => "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+  %body
+    = render 'layouts/menu'
+    
+    .container
+      .row
+        .span9
+          - flash.each do |key ,value|
+            %div{:class => "alert fade in  alert-#{key == :notice ? 'success' : key}"}
+              %a.close{"data-dismiss" => "alert", :href => "#"} ×
+              = value
+          = yield
+          
+        .span3
