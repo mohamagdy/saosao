@@ -8,19 +8,24 @@
 
 - else
   .well
-    = "You are following #{@totals[:followers]} follower and have #{@totals[:followees]} followee" 
+    = "You are following #{pluralize(@totals[:followers], 'follower')} and have #{pluralize(@totals[:followees], 'followee')} " 
   
   %table.table.projects
     %thead
       %tr
         %th Screen Name
-        %th
+        %th Unfollow?
     %tbody
-      - @followees.each do |followee|
+      = form_tag unfollow_followees_path, :html => { :class => 'form-horizontal' } do
+        - @followees.each do |followee|
+          %tr
+            %td= followee["name"]
+            %td= check_box_tag "followees_ids[]", followee["id"]
+        
         %tr
-          %td= followee["name"]
           %td
-    
+          %td= submit_tag "Unfollow checked", :class => 'btn btn-danger'
+            
   #pagination
     
   :javascript

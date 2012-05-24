@@ -31,7 +31,7 @@ class Twitter
       :oauth_consumer_key => Twitter.consumer_key,
       :oauth_nonce => SecureRandom.hex, # Random 64-bit, unsigned number encoded as an ASCII string in decimal format
       :oauth_signature_method => "HMAC-SHA1",
-      :oauth_timestamp => Time.now.to_i.to_s,
+      :oauth_timestamp => Time.now.getutc.to_i.to_s,
       :oauth_version => "1.0"
     }
   end
@@ -98,7 +98,8 @@ class Twitter
     params = Twitter.params
     params[:oauth_signature] = OAuth.url_encode(OAuth.sign(Twitter.consumer_secret + '&', OAuth.signature_base_string(method, uri, params)))
     uri += "?user_id=#{followees_ids}" # Add in the GET parameters to the URL
-    JSON.parse(OAuth.request_data(OAuth.header(params), uri, method))   
+    data = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method))
+    data.is_a?(Hash) && data.has_key?("errors") ? [] : data   
   end
   
   # This method returns the number of followees and followers the user
@@ -111,6 +112,21 @@ class Twitter
     uri += "?screen_name=#{screen_name}"
     data = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method))
     {:followees => data.first["followers_count"], :followers => data.first["friends_count"]} 
+  end
+  
+  # This method used to unfollow a user. The given parameters are
+  # auth_token: the auth_token of the currently logged in user
+  # auth_token_secret: the secret auth_token of the currently logged in user
+  # followee_id: the id of the followee to be unfollowed
+  # The method used is POST and this action requires authentication
+  def self.unfollow(auth_token, auth_token_secret, followee_id)
+    method = "POST"
+    uri = "https://api.twitter.com/1/friendships/destroy.json"
+    params = Twitter.params
+    params[:user_id] = followee_id
+    params[:oauth_token] = auth_token
+    params[:oauth_signature] = OAuth.url_encode(OAuth.sign(consumer_secret + '&' + auth_token_secret, OAuth.signature_base_string(method, uri, params)))
+    resp = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "user_id=" + followee_id))
   end
   
   private

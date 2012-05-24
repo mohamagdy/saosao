@@ -2,6 +2,8 @@ Saosao::Application.routes.draw do
   root :to => "home#index"
   
   match "/twitter_signin_callback" => "home#twitter_signin_callback", :as => :twitter_signin_callback
+  post "/unfollow" => "home#unfollow", :as => :unfollow_followees
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

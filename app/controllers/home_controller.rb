@@ -17,13 +17,26 @@ class HomeController < ApplicationController
     if params[:oauth_token] == session[:oauth_token]
       # Getting the user's data (screen_name and user_id)
       user_data = Twitter.user_info(params[:oauth_verifier], session[:oauth_token])
-      # Saving the screen_name for future use
+      
+      # Saving the user's tokens and the screen_name for future use
+      session[:oauth_token] = user_data[:oauth_token] # For authenticated access
+      session[:oauth_token_secret] = user_data[:oauth_token_secret] # For authenticated access
       session[:screen_name] = user_data[:screen_name]
+      
       redirect_to root_path
     else
       # Hacking
       flash[:warning] = "Not authorized access!"
       redirect_to root_path
     end
+  end
+  
+  def unfollow
+    params[:followees_ids].each do |followee_id|
+      Twitter.unfollow(session[:oauth_token], session[:oauth_token_secret], followee_id)
+    end
+    
+    flash[:success] = "Successfully unfollowed #{params[:followees_ids].count} followee!"
+    redirect_to root_path
   end
 end

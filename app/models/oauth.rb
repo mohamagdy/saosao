@@ -32,7 +32,7 @@ module OAuth
     url = URI.parse(base_uri)
     http = Net::HTTP.new(url.host, 443) # set to 80 if not using HTTPS
     http.use_ssl = true # ignore if not using HTTPS
-    if method == 'POST'
+    if method == "POST"
       resp, data = http.post(url.path, post_data, { 'Authorization' => header })
     else
       resp, data = http.get(url.to_s, { 'Authorization' => header })
