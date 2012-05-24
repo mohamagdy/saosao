@@ -77,7 +77,7 @@ class Twitter
     # to the next 5000 record so we made our pagination according to to the
     # page parameter passed to this method. This could be a perfect example 
     # https://api.twitter.com/1/followers/ids.json?screen_name=ESET&cursor=-1
-    curser_forwarding_count = (page.to_f / 250).ceil
+    curser_forwarding_count = (page / 250.0).ceil
     cursor = -1
     data = nil
     
