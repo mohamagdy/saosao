@@ -13,16 +13,19 @@
   %table.table.projects
     %thead
       %tr
+        %td
         %th Screen Name
         %th Unfollow?
     %tbody
       = form_tag unfollow_followees_path, :html => { :class => 'form-horizontal' } do
         - @followees.each do |followee|
           %tr
-            %td= followee["name"]
+            %td= image_tag followee["profile_image_url_https"]
+            %td= link_to followee["name"], "http://twitter.com/#!/#{followee['screen_name']}"
             %td= check_box_tag "followees_ids[]", followee["id"]
         
         %tr
+          %td
           %td
           %td= submit_tag "Unfollow checked", :class => 'btn btn-danger'
             

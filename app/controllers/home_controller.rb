@@ -1,8 +1,10 @@
 class HomeController < ApplicationController
+  
+  # GET /
   def index
     if !session[:screen_name]
       # Saving the token and token secret for future use
-      session[:oauth_token], session[:oauth_token_secret] = Twitter.obtain_request_token
+      session[:oauth_token], oauth_token_secret = Twitter.obtain_request_token
       # Setting the twitter authentication url
       @login_url = "https://api.twitter.com/oauth/authenticate?oauth_token=" + session[:oauth_token]
     else
@@ -12,6 +14,7 @@ class HomeController < ApplicationController
     end
   end
 
+  # GET /twitter_signin_callback
   def twitter_signin_callback
     # Checking if the tokens match
     if params[:oauth_token] == session[:oauth_token]
@@ -31,6 +34,7 @@ class HomeController < ApplicationController
     end
   end
   
+  # POST /unfollow
   def unfollow
     params[:followees_ids].each do |followee_id|
       Twitter.unfollow(session[:oauth_token], session[:oauth_token_secret], followee_id)
@@ -40,10 +44,12 @@ class HomeController < ApplicationController
     redirect_to root_path
   end
   
+  # POST /search
   def search
     @users = Twitter.search(params[:search], params[:page] || 1)
   end
   
+  # POST /follow
   def follow
     params[:users_screen_names].each do |user_screen_name|
       Twitter.follow(session[:oauth_token], session[:oauth_token_secret], user_screen_name)

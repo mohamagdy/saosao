@@ -129,6 +129,8 @@ class Twitter
     resp = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "user_id=" + followee_id))
   end
   
+  # This method uses the Twitter's tweets search API. The params are
+  # the query string, the screen_name of the current user and the page number
   def Twitter.search(query, current_user_screen_name, page=1)
     method = "GET"
     uri = "http://search.twitter.com/search.json"
@@ -139,9 +141,14 @@ class Twitter
     tweets = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method))
     # Fetching the users created these tweets and calling the uniq method to remove duplicates
     users_screen_names = tweets["results"].inject([]){|users, result| users << result["from_user"]}.uniq
+    
+    # Ignoring the users who have friendship with the current user
     Twitter.check_friendship(users_screen_names, current_user_screen_name)
   end
   
+  # This method checks if the users with screen names given in the
+  # users_screen_names array have friendship with the user with
+  # screen name  current_user_screen_name
   def self.check_friendship(users_screen_names, current_user_screen_name)
     users_screen_names.inject([]) do |users, user_screen_name|
       method = "GET"
@@ -153,6 +160,11 @@ class Twitter
     end
   end
   
+  # This method used to follow a user. The given parameters are
+  # auth_token: the auth_token of the currently logged in user
+  # auth_token_secret: the secret auth_token of the currently logged in user
+  # user_screen_name: the screen name of the user to be followed
+  # The method used is POST and this action requires authentication
   def self.follow(auth_token, auth_token_secret, user_screen_name)
     method = "POST"
     uri = "https://api.twitter.com/1/friendships/create.json"
@@ -160,7 +172,7 @@ class Twitter
     params[:screen_name] = user_screen_name
     params[:oauth_token] = auth_token
     params[:oauth_signature] = OAuth.url_encode(OAuth.sign(consumer_secret + '&' + auth_token_secret, OAuth.signature_base_string(method, uri, params)))
-    resp = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "screen_name=" + user_screen_name))
+    JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "screen_name=" + user_screen_name))
   end
   
   # This method is used to sign out a logged in user from Twitter
