@@ -156,6 +156,7 @@ class Twitter
       params = Twitter.params
       params[:oauth_signature] = OAuth.url_encode(OAuth.sign(Twitter.consumer_secret + '&', OAuth.signature_base_string(method, uri, params)))
       uri += "?screen_name_a=#{user_screen_name}&screen_name_b=#{current_user_screen_name}" # Add in the GET parameters to the URL
+      
       users << user_screen_name if OAuth.request_data(OAuth.header(params), uri, method) == "false"
     end
   end
