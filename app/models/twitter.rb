@@ -75,7 +75,8 @@ class Twitter
     # returned from the /friends/ids.json is 5000 that's why 250 (5000 / 20).
     # To load the next records, Twitter sends a parameter called "next_cursor" to paginate 
     # to the next 5000 record so we made our pagination according to to the
-    # page parameter passed to this method.
+    # page parameter passed to this method. This could be a perfect example 
+    # https://api.twitter.com/1/followers/ids.json?screen_name=ESET&cursor=-1
     curser_forwarding_count = (page.to_f / 250).ceil
     cursor = -1
     data = nil
