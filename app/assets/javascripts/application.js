@@ -15,3 +15,22 @@
 //= require_tree .
 // Loads all Bootstrap javascripts
 //= require bootstrap
+
+
+function paginate(total_number_of_pages, current_page) {
+	$("#pagination").paginate({
+	  count: total_number_of_pages,
+	  start: current_page,
+	  display: 12,
+	  border: false,
+	  text_color: '#79B5E3',
+	  background_color: 'none', 
+	  text_hover_color: '#2573AF',
+	  background_hover_color: 'none', 
+	  images: false,
+	  mouse: 'press',
+		onChange: function(page) {
+			window.location.replace($.param.querystring(window.location.href, 'page=' + page));
+	  }
+	});
+}

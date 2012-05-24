@@ -5,3 +5,25 @@
       .icon
       .login 
         Sign in with Twitter
+
+- else
+  .well
+    = "You are following #{@totals[:followers]} follower and have #{@totals[:followees]} followee" 
+  
+  %table.table.projects
+    %thead
+      %tr
+        %th Screen Name
+        %th
+    %tbody
+      - @followees.each do |followee|
+        %tr
+          %td= followee["name"]
+          %td
+    
+  #pagination
+    
+  :javascript
+    paginate(#{(@totals[:followers] / 20.0).ceil}, #{params[:page] || 1});
+    
+    

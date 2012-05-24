@@ -3,14 +3,14 @@
   %head
     %title Saosao
     = stylesheet_link_tag    "application", :media => "all"
-    = javascript_include_tag "application"
+    = javascript_include_tag "application", "jquery.paginate", "jquery.ba-bbq"
     = csrf_meta_tags
   %body
     = render 'layouts/menu'
     
     .container
       .row
-        .span9
+        .span6.offset3
           - flash.each do |key ,value|
             %div{:class => "alert fade in  alert-#{key == :notice ? 'success' : key}"}
               %a.close{"data-dismiss" => "alert", :href => "#"} ×

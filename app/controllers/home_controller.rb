@@ -1,10 +1,14 @@
 class HomeController < ApplicationController
   def index
-    unless session[:screen_name]
+    if !session[:screen_name]
       # Saving the token and token secret for future use
       session[:oauth_token], session[:oauth_token_secret] = Twitter.obtain_request_token
       # Setting the twitter authentication url
       @login_url = "https://api.twitter.com/oauth/authenticate?oauth_token=" + session[:oauth_token]
+    else
+      page = params[:page] || 1
+      @followees = Twitter.followees(session[:screen_name], page.to_i)
+      @totals = Twitter.totals(session[:screen_name])
     end
   end
 
