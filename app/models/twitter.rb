@@ -129,6 +129,40 @@ class Twitter
     resp = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "user_id=" + followee_id))
   end
   
+  def Twitter.search(query, current_user_screen_name, page=1)
+    method = "GET"
+    uri = "http://search.twitter.com/search.json"
+    params = Twitter.params
+    params[:oauth_signature] = OAuth.url_encode(OAuth.sign(consumer_secret + '&', OAuth.signature_base_string(method, uri, params)))
+    uri += "?q=#{query}&page=#{page}&rpp=20"
+    # Retreiving all the tweets matching the query string
+    tweets = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method))
+    # Fetching the users created these tweets and calling the uniq method to remove duplicates
+    users_screen_names = tweets["results"].inject([]){|users, result| users << result["from_user"]}.uniq
+    Twitter.check_friendship(users_screen_names, current_user_screen_name)
+  end
+  
+  def self.check_friendship(users_screen_names, current_user_screen_name)
+    users_screen_names.inject([]) do |users, user_screen_name|
+      method = "GET"
+      uri = "https://api.twitter.com/1/friendships/exists.json"
+      params = Twitter.params
+      params[:oauth_signature] = OAuth.url_encode(OAuth.sign(Twitter.consumer_secret + '&', OAuth.signature_base_string(method, uri, params)))
+      uri += "?screen_name_a=#{user_screen_name}&screen_name_b=#{current_user_screen_name}" # Add in the GET parameters to the URL
+      users << user_screen_name if OAuth.request_data(OAuth.header(params), uri, method) == "false"
+    end
+  end
+  
+  def self.follow(auth_token, auth_token_secret, user_screen_name)
+    method = "POST"
+    uri = "https://api.twitter.com/1/friendships/create.json"
+    params = Twitter.params
+    params[:screen_name] = user_screen_name
+    params[:oauth_token] = auth_token
+    params[:oauth_signature] = OAuth.url_encode(OAuth.sign(consumer_secret + '&' + auth_token_secret, OAuth.signature_base_string(method, uri, params)))
+    resp = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "screen_name=" + user_screen_name))
+  end
+  
   private
   # Parsing the response
   def self.parse_response(str)

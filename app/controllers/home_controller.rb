@@ -36,7 +36,20 @@ class HomeController < ApplicationController
       Twitter.unfollow(session[:oauth_token], session[:oauth_token_secret], followee_id)
     end
     
-    flash[:success] = "Successfully unfollowed #{params[:followees_ids].count} followee!"
+    flash[:success] = "Successfully unfollowed #{params[:followees_ids].count} followee(s)!"
+    redirect_to root_path
+  end
+  
+  def search
+    @users = Twitter.search(params[:search], params[:page] || 1)
+  end
+  
+  def follow
+    params[:users_screen_names].each do |user_screen_name|
+      Twitter.follow(session[:oauth_token], session[:oauth_token_secret], user_screen_name)
+    end
+    
+    flash[:success] = "Successfully followed #{params[:users_screen_names].count} followee(s)!"
     redirect_to root_path
   end
 end

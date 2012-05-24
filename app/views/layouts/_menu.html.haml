@@ -11,7 +11,10 @@
       .nav-collapse
         %ul.nav
           %li{:class => menu_item_class("home", "index")}= link_to "Home", root_path
-         
+        
+        = form_tag search_path, :class => "navbar-search pull-left" do
+          = text_field_tag "search", nil, :class => "search-query", :placeholder => "Search"
+        
         - if session[:screen_name]
           %ul.nav.pull-right
             %li.dropdown

@@ -1,0 +1,20 @@
+%table.table.projects
+  %thead
+    %tr
+      %th Screen Name
+      %th Follow?
+  %tbody
+    = form_tag follow_path, :html => { :class => 'form-horizontal' } do
+      - @users.each do |user|
+        %tr
+          %td= user
+          %td= check_box_tag "users_screen_names[]", user
+      
+      %tr
+        %td
+        %td= submit_tag "Follow checked", :class => 'btn btn-success'
+          
+#pagination
+  
+:javascript
+  paginate(20, #{params[:page] || 1});
