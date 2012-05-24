@@ -52,4 +52,18 @@ class HomeController < ApplicationController
     flash[:success] = "Successfully followed #{params[:users_screen_names].count} followee(s)!"
     redirect_to root_path
   end
+  
+  # GET /sign_out
+  def sign_out
+    # Signing out from Twitter
+    Twitter.sign_out(session[:oauth_token], session[:oauth_token_secret])
+    
+    # Clearing the user's data saved in the session
+    session.delete(:oauth_token)
+    session.delete(:oauth_token_secret)
+    session.delete(:screen_name)
+    
+    flash[:success] = "Signed out sucessfully!"
+    redirect_to root_path
+  end
 end

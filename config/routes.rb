@@ -8,6 +8,7 @@ Saosao::Application.routes.draw do
   match "/search" => "home#search", :as => :search
   post "/follow" => "home#follow", :as => :follow
   
+  match "/sign_out" => "home#sign_out", :as => :sign_out
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

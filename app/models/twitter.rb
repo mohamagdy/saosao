@@ -163,6 +163,18 @@ class Twitter
     resp = JSON.parse(OAuth.request_data(OAuth.header(params), uri, method, "screen_name=" + user_screen_name))
   end
   
+  # This method is used to sign out a logged in user from Twitter
+  # The method takes the auth_token and the secret auth_token of the 
+  # logged in user
+  def self.sign_out(auth_token, auth_token_secret)
+    method = "POST"
+    uri = "https://api.twitter.com/1/account/end_session.json"
+    params = Twitter.params
+    params[:oauth_token] = auth_token
+    params[:oauth_signature] = OAuth.url_encode(OAuth.sign(consumer_secret + '&' + auth_token_secret, OAuth.signature_base_string(method, uri, params)))
+    JSON.parse(OAuth.request_data(OAuth.header(params), uri, method))
+  end
+  
   private
   # Parsing the response
   def self.parse_response(str)
