@@ -1,0 +1,9 @@
+development: &defaults
+  consumer_key: "BXav0s9AAXhARMtTM5GM7A" 
+  consumer_secret: "aGiZB0LdpikPQFUWYWLuD9IET4frbM4hxiuVDN7F5WA"
+  callback_url: "http://localhost:3000/twitter_signin_callback"
+  
+production:
+  consumer_key: "foYiMY2ouuF3Mi41K7bdQ" 
+  consumer_secret: "uwaSET81cDSLyMdkxY7oTwt1HzLKUkTVHWi1jSlDSWo"
+  callback_url: "http://saosao.herokuapp.com/twitter_signin_callback"

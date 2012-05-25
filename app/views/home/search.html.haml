@@ -7,7 +7,7 @@
     = form_tag follow_path, :html => { :class => 'form-horizontal' } do
       - @users.each do |user|
         %tr
-          %td= user
+          %td= link_to user, "https://twitter.com/#!/#{user}"
           %td= check_box_tag "users_screen_names[]", user
       
       %tr

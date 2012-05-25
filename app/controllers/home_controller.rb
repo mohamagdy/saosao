@@ -8,6 +8,7 @@ class HomeController < ApplicationController
     if !session[:screen_name]
       # Saving the token and token secret for future use
       session[:oauth_token], oauth_token_secret = Twitter.obtain_request_token
+      
       # Setting the twitter authentication url
       @login_url = "https://api.twitter.com/oauth/authenticate?oauth_token=" + session[:oauth_token]
     else
